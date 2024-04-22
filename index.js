@@ -24,9 +24,38 @@ function calcularIdade(datanascimento){
     return idade;
 }
 
-function signo(signo){
+function calcularSigno(datanascimento) {
+    const dataNasc = new Date(datanascimento);
+    const dia = dataNasc.getDate();
+    const mes = dataNasc.getMonth() + 1;
 
-}
+    if ((dia >= 21 && mes === 3) || (dia <= 20 && mes === 4)) {
+        return 'Áries';
+    } else if ((dia >= 21 && mes === 4) || (dia <= 20 && mes === 5)) {
+        return 'Touro';
+    } else if ((dia >= 21 && mes === 5) || (dia <= 20 && mes === 6)) {
+        return 'Gêmeos';
+    } else if ((dia >= 21 && mes === 6) || (dia <= 22 && mes === 7)) {
+        return 'Câncer';
+    } else if ((dia >= 23 && mes === 7) || (dia <= 22 && mes === 8)) {
+        return 'Leão';
+    } else if ((dia >= 23 && mes === 8) || (dia <= 22 && mes === 9)) {
+        return 'Virgem';
+    } else if ((dia >= 23 && mes === 9) || (dia <= 22 && mes === 10)) {
+        return 'Libra';
+    } else if ((dia >= 23 && mes === 10) || (dia <= 21 && mes === 11)) {
+        return 'Escorpião';
+    } else if ((dia >= 22 && mes === 11) || (dia <= 21 && mes === 12)) {
+        return 'Sagitário';
+    } else if ((dia >= 22 && mes === 12) || (dia <= 20 && mes === 1)) {
+        return 'Capricórnio';
+    } else if ((dia >= 21 && mes === 1) || (dia <= 18 && mes === 2)) {
+        return 'Aquário';
+    } else {
+        return 'Peixes';
+    }
+};
+
 app.use(express.json());
 
 app.get('/', (req, res) => {
