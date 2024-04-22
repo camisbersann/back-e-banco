@@ -12,6 +12,21 @@ const pool = new Pool({
     port: 5432,
 });
 
+function calcularIdade(datanascimento){
+    const dataAtual = new Date();
+    const dataNasc = new Date(datanascimento);
+    let idade = dataAtual.getFullYear() - dataNasc.getFullYear();
+    const mes = dataAtual.getMonth() - dataNasc.getMonth(); 
+
+    if(mes < 0 || (mes == 0 && dataAtual.getDate() < dataNasc.getDate())){
+        idade--;
+    }
+    return idade;
+}
+
+function signo(signo){
+
+}
 app.use(express.json());
 
 app.get('/', (req, res) => {
@@ -33,8 +48,8 @@ app.get('/usuarios', async (req, res) => {
 
 app.post('/usuarios', async (req, res) => {
     try {
-       const { nome, email } = req.body;
-       await pool.query('INSERT INTO usuarios (nome, email) VALUES ($1, $2)', [nome, email]);
+       const { nome, sobrenome, email, datanascimento, sexo } = req.body;
+       await pool.query('INSERT INTO usuarios (nome, sobrenome, email, datanascimento, sexo) VALUES ($1, $2, $3, $4, $5)', [nome, sobrenome, email, datanascimento, sexo]);
        res.status(201).send({mensagem: 'Usuário criado com sucesso'});
     } catch (error) {
         console.error('Erro ao inserir o usuário', error); 
@@ -56,8 +71,8 @@ app.delete('/usuarios/:id', async (req, res) => {
 app.put('/usuarios/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { nome, email } = req.body;
-        await pool.query('UPDATE usuarios SET nome = $1, email = $2 WHERE id = $3', [nome, email, id]);
+        const { nome, sobrenome, email, datanascimento, sexo } = req.body;
+        await pool.query('UPDATE usuarios SET nome = $1, sobrenome = $2, email = $3, datanascimento = $4, sexo = $5 WHERE id = $6', [nome, sobrenome, email, datanascimento, sexo, id]);
         res.status(201).send({mensagem: 'Usuário atualizado com sucesso'});
     } catch (error) {
         console.error('Erro ao atualizar o usuário', error); 
