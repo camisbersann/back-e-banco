@@ -18,7 +18,7 @@ function calcularIdade(datanascimento){
     let idade = dataAtual.getFullYear() - dataNasc.getFullYear();
     const mes = dataAtual.getMonth() - dataNasc.getMonth(); 
 
-    if(mes < 0 || (mes == 0 && dataAtual.getDate() < dataNasc.getDate())){
+    if(mes < 0 || (mes === 0 && dataAtual.getDate() < dataNasc.getDate())){
         idade--;
     }
     return idade;
@@ -77,12 +77,16 @@ app.get('/usuarios', async (req, res) => {
 
 app.post('/usuarios', async (req, res) => {
     try {
-       const { nome, sobrenome, email, datanascimento, sexo } = req.body;
-       await pool.query('INSERT INTO usuarios (nome, sobrenome, email, datanascimento, sexo) VALUES ($1, $2, $3, $4, $5)', [nome, sobrenome, email, datanascimento, sexo]);
-       res.status(201).send({mensagem: 'Usuário criado com sucesso'});
-    } catch (error) {
-        console.error('Erro ao inserir o usuário', error); 
-       res.status(500).send('Erro ao inserir o usuário');
+        const { nome, sobrenome, email, datanascimento, sexo} = req.body;
+
+        const idade = calcularIdade(datanascimento);
+        const signo = calcularSigno(datanascimento);
+
+        await pool.query('INSERT INTO usuarios (nome, sobrenome, email, idade, signo, datanascimento, sexo) VALUES ($1, $2, $3, $4, $5, $6, $7)', [nome, sobrenome, email, idade, signo, datanascimento, sexo]);
+        res.status(201).send({ mensagem: 'Usuário criado com sucesso! 💋' });
+    }   catch (error) {
+        console.error('Erro ao criar o usuário', error);
+        res.status(500).json({ message: 'Erro ao criar o usuário' });
     }
 });
 
@@ -101,7 +105,11 @@ app.put('/usuarios/:id', async (req, res) => {
     try {
         const { id } = req.params;
         const { nome, sobrenome, email, datanascimento, sexo } = req.body;
-        await pool.query('UPDATE usuarios SET nome = $1, sobrenome = $2, email = $3, datanascimento = $4, sexo = $5 WHERE id = $6', [nome, sobrenome, email, datanascimento, sexo, id]);
+
+        const idade = calcularIdade(datanascimento);
+        const signo = calcularSigno(datanascimento);
+
+        await pool.query('UPDATE usuarios SET nome = $1, sobrenome = $2, email = $3, idade = $4, signo = $5, datanascimento = $6, sexo = $7 WHERE id = $8', [nome, sobrenome, email, idade, signo, datanascimento, sexo, id]);
         res.status(201).send({mensagem: 'Usuário atualizado com sucesso'});
     } catch (error) {
         console.error('Erro ao atualizar o usuário', error); 
